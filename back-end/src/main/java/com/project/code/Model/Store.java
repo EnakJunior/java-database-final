@@ -1,6 +1,8 @@
 package com.project.code.Model;
 
+import jakarta.persistence.Entity;
 
+@Entity
 public class Store {
 
 // 1. Add 'id' field:
