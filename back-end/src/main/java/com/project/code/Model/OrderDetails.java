@@ -1,5 +1,6 @@
 package com.project.code.Model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ public class OrderDetails {
 //    - Use @ManyToOne with @JoinColumn(name = "customer_id") to define the foreign key relationship.
 //    - Apply @JsonManagedReference to handle bidirectional relationships and JSON serialization.
     @ManyToOne @JoinColumn(name = "customer_id")
+    @JsonManagedReference
     private Customer customer;
 
 // 3. Add 'store' field:
@@ -31,6 +33,7 @@ public class OrderDetails {
 //    - Use @ManyToOne with @JoinColumn(name = "store_id") to define the foreign key relationship.
 //    - Apply @JsonManagedReference to handle bidirectional relationships and JSON serialization.
     @ManyToOne @JoinColumn(name = "store_id")
+    @JsonManagedReference
     private Store store;
 
 // 4. Add 'totalPrice' field:
@@ -54,6 +57,7 @@ public class OrderDetails {
 //    - Use @OneToMany(mappedBy = "order", fetch = FetchType.EAGER) to establish the one-to-many relationship with OrderItem.
 //    - Apply @JsonManagedReference to prevent circular references during JSON serialization.
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<OrderItem> orderItems;
 
 // 7. Add constructors:
@@ -76,29 +80,49 @@ public class OrderDetails {
     // Getters --------
 
     public long getId(){
-        return this.id;
+        return id;
     }
 
     public Customer getCustomer(){
-        return this.customer;
+        return customer;
     }
 
     public Store getStore(){
-        return this.store;
+        return store;
     }
 
     public double getTotalPrice(){
-        return this.totalPrice;
+        return totalPrice;
     }
 
     public LocalDateTime getDate(){
-        return this.date;
+        return date;
     }
 
     public List<OrderItem> getOrderItems(){
-        return this.orderItems;
+        return orderItems;
     }
 
     // Setter -------
+
+    public void setCustomer(Customer customer){
+        this.customer = customer;
+    }
+
+    public void setStore(Store store){
+        this.store = store;
+    }
+
+    public void setTotalPrice(double totalPrice){
+        this.totalPrice = totalPrice;
+    }
+
+    public void setDate(LocalDateTime dateTime){
+        this.date = dateTime;
+    }
+
+    public void setOrderItems(List<OrderItem> orderItems){
+        this.orderItems = orderItems;
+    }
 
 }
