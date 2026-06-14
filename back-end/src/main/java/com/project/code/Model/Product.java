@@ -1,6 +1,9 @@
 package com.project.code.Model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "product", uniqueConstraints = @UniqueConstraint(columnNames = "sku"))
@@ -41,13 +44,63 @@ public class Product {
 //    - **Inventory**: A product can have multiple inventory entries.
 //    - Use @OneToMany(mappedBy = "product") to reflect the one-to-many relationship with Inventory.
 //    - Use @JsonManagedReference("inventory-product") to manage bidirectional relationships and avoid circular references.
-
+    @OneToMany(mappedBy = "product")
+    @JsonManagedReference("inventory-product")
+    private List<Inventory> inventories;
 
 // 7. Add @Entity annotation:
 //    - Use @Entity above the class name to mark it as a JPA entity.
 
 // 8. Add Getters and Setters:
 //    - Add getter and setter methods for all fields (id, name, category, price, sku).
+//    Constructor
+    public Product(){}
+
+//    Getters ------
+    public long getId(){
+        return id;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public String getCategory(){
+        return category;
+    }
+
+    public double getPrice(){
+        return price;
+    }
+
+    public String getSku(){
+        return sku;
+    }
+
+    public List<Inventory> getInventories(){
+        return inventories;
+    }
+
+//    Setters --------
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public void setCategory(String category){
+        this.category = category;
+    }
+
+    public void setPrice(double price){
+        this.price = price;
+    }
+
+    public void setSku(String sku){
+        this.sku = sku;
+    }
+
+    public void setInventories(List<Inventory> inventories){
+        this.inventories = inventories;
+    }
 
 }
 
