@@ -56,14 +56,63 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 // Example: public Product findByName(String name);
     public Product findByName(String name);
 
+
 //    - **findByNameLike**:
 //      - This method will retrieve products by a name pattern for a specific store.
 //      - Return type: List<Product>
 //      - Parameters: Long storeId, String pname
 //      - Use @Query annotation to write a custom query.
-    @Query("SELECT p FROM Product p JOIN Inventory i ON p.id = i.product.id " +
-            "WHERE i.store.id = :storeId AND p.name LIKE %:pname%")
+    @Query("SELECT i.product FROM Inventory i WHERE i.store.id = :storeId AND i.product.name LIKE %:pname%")
     public List<Product> findByNameLike(long storeId, String pname);
 
 
+//    - **findByNameAndCategory**:
+//      - This method will retrieve products by their name and category for a specific store.
+//      - Return type: List<Product>
+//      - Parameters: Long storeId, String pname, String category
+//      - Use @Query annotation to write a custom query.
+    @Query("SELECT i.product FROM Inventory i WHERE i.store.id = :storeId " +
+        "AND LOWER(i.product.name) LIKE LOWER(CONCAT('%', :pname, '%')) AND i.product.category = :category")
+    public List<Product> findByNameAndCategory(Long storeId, String pname, String category);
+
+
+//    - **findBayCategoryAndStoreId**:
+//      - This method will retrieve products by their category for a specific store.
+//      - Return type: List<Product>
+//      - Parameters: String category, Long storeId
+//      - Use @Query annotation to write a custom query.
+    @Query("SELECT i.product FROM Inventory i WHERE i.store.id = :storeId AND i.product.category = :category")
+    public List<Product> findBayCategoryAndStoreId(String category, Long storeId);
+
+
+//    - **findProductBySubName**:
+//      - This method will retrieve products whose name contains a given substring.
+//      - Return type: List<Product>
+//      - Parameter: String pname
+    @Query("SELECT i FROM Product i WHERE LOWER(i.name) LIKE LOWER(CONCAT('%', :pname, '%'))")
+    public List<Product> findProductBySubName(String pname);
+
+
+//    - **findProductByStoreId**:
+//        - This method will retrieve products available in a specific store.
+//        - Return type: List<Product>
+//        - Parameter: Long storeId
+    @Query("SELECT i.product FROM Inventory i WHERE i.store.id = :storeId")
+    public List<Product> findProductByStoreId(Long storeId);
+
+
+//    - **findProductByCategory**:
+//        - This method will retrieve products by their category for a specific store.
+//        - Return type: List<Product>
+//        - Parameter: String category
+    @Query("SELECT i.product FROM Inventory i WHERE i.product.category = :category and i.store.id = :storeId")
+    public List<Product> findProductByCategory(String category);
+
+
+//    - **findProductBySubNameAndCategory**:
+//        - This method will retrieve products whose name contains a given substring and belong to a specific category.
+//        - Return type: List<Product>
+//        - Parameters: String pname, String category
+    @Query("SELECT i FROM Product i WHERE LOWER(i.name) LIKE LOWER(CONCAT('%', :pname, '%')) AND i.category = :category")
+    public List<Product> findProductBySubNameAndCategory(String pname, String category);
 }

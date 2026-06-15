@@ -47,10 +47,6 @@ public class OrderDetails {
 //    - This field represents the date and time when the order was placed.
     private LocalDateTime date;
 
-    @PrePersist
-    protected void onCreated(){
-        this.date = LocalDateTime.now();
-    }
 // 6. Add 'orderItems' field:
 //    - Type: private List<OrderItem>
 //    - This field represents the list of items in the order.
