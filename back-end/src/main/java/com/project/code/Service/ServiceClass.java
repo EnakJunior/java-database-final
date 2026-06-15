@@ -18,7 +18,7 @@ public class ServiceClass {
 //    - Checks if an inventory record exists for a given product and store combination.
 //    - Parameters: `Inventory inventory`
 //    - Return Type: `boolean` (Returns `false` if inventory exists, otherwise `true`)
-    private boolean validateInventory(Inventory inventory) {
+    public boolean validateInventory(Inventory inventory) {
         // Implement logic to check if the inventory record exists for the given product and store combination.
         if (inventory.equals(inventoryRepository.findByProductIdandStoreId(inventory.getProduct().getId(), inventory.getStore().getId()))) {
             return false; // Inventory record exists
@@ -31,7 +31,7 @@ public class ServiceClass {
 //    - Checks if a product exists by its name.
 //    - Parameters: `Product product`
 //    - Return Type: `boolean` (Returns `false` if a product with the same name exists, otherwise `true`)
-    private boolean validateProduct(Product product) {
+    public boolean validateProduct(Product product) {
         // Implement logic to check if a product with the same name exists.
         if (product.equals(productRepository.findByName(product.getName()))) {
             return false; // Product with the same name exists
@@ -44,7 +44,7 @@ public class ServiceClass {
 //    - Checks if a product exists by its ID.
 //    - Parameters: `long id`
 //    - Return Type: `boolean` (Returns `false` if the product does not exist with the given ID, otherwise `true`)
-    private boolean ValidateProductId(long id) {
+    public boolean ValidateProductId(long id) {
         // Implement logic to check if a product exists by its ID.
         if (productRepository.findById(id).isPresent()) {
             return true; // Product exists
@@ -57,7 +57,7 @@ public class ServiceClass {
 //    - Fetches the inventory record for a given product and store combination.
 //    - Parameters: `Inventory inventory`
 //    - Return Type: `Inventory` (Returns the inventory record for the product-store combination)
-    private Inventory getInventoryId(Inventory inventory) {
+    public Inventory getInventoryId(Inventory inventory) {
         // Implement logic to fetch the inventory record for the given product and store combination.
         return inventoryRepository.findByProductIdandStoreId(inventory.getProduct().getId(), inventory.getStore().getId());
     }

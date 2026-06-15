@@ -41,4 +41,5 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
 //      - Use @Modifying and @Transactional annotations to ensure the database is modified correctly.
     public List<Inventory> findByProductId(Long productId);
 
+    void deleteByProductId(Long id);
 }

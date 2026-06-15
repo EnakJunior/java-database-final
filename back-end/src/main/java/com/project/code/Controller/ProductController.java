@@ -1,5 +1,18 @@
 package com.project.code.Controller;
 
+import com.project.code.Model.Product;
+import com.project.code.Repo.InventoryRepository;
+import com.project.code.Repo.ProductRepository;
+import com.project.code.Service.ServiceClass;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/product")
 public class ProductController {
 // 1. Set Up the Controller Class:
 //    - Annotate the class with `@RestController` to designate it as a REST controller for handling HTTP requests.
@@ -11,6 +24,12 @@ public class ProductController {
 //        - `ProductRepository` for CRUD operations on products.
 //        - `ServiceClass` for product validation and business logic.
 //        - `InventoryRepository` for managing the inventory linked to products.
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private InventoryRepository inventoryRepository;
+    @Autowired
+    private ServiceClass serviceClass;
 
 
 // 3. Define the `addProduct` Method:
@@ -19,6 +38,20 @@ public class ProductController {
 //    - Validate product existence using `validateProduct()` in `ServiceClass`.
 //    - Save the valid product using `save()` method of `ProductRepository`.
 //    - Catch exceptions (e.g., `DataIntegrityViolationException`) and return appropriate error message.
+    @PostMapping
+    public String addProduct(@RequestBody Product product) {
+        if (serviceClass.validateProduct(product)) {
+            return "Product already exists.";
+        } else {
+            try {
+                productRepository.save(product);
+                return "Product added successfully.";
+            } catch (DataIntegrityViolationException exception) {
+                    return "Error adding product: " + exception.getMessage();
+                }
+            }
+        }
+    }
 
 
 // 4. Define the `getProductbyId` Method:
@@ -26,6 +59,13 @@ public class ProductController {
 //    - Accept product ID via `@PathVariable`.
 //    - Use `findById(id)` method from `ProductRepository` to fetch the product.
 //    - Return the product in a `Map<String, Object>` with key `products`.
+    @GetMapping("/product/{id}")
+    public Map<String, Object> getProductbyId(@PathVariable Long id) {
+        Product product = productRepository.findById(id).orElse(null);
+        Map<String, Object> response = new HashMap<>();
+        response.put("products", product);
+        return response;
+    }
 
 
  // 5. Define the `updateProduct` Method:
@@ -33,6 +73,11 @@ public class ProductController {
 //    - Accept updated `Product` object in the request body.
 //    - Use `save()` method from `ProductRepository` to update the product.
 //    - Return a success message with key `message` after updating the product.
+    @PutMapping
+    public String updateProduct(@RequestBody Product product) {
+        productRepository.save(product);
+        return "Product updated successfully.";
+    }
 
 
 // 6. Define the `filterbyCategoryProduct` Method:
@@ -40,12 +85,32 @@ public class ProductController {
 //    - Use conditional filtering logic if `name` or `category` is `"null"`.
 //    - Fetch products based on category using methods like `findByCategory()` or `findProductBySubNameAndCategory()`.
 //    - Return filtered products in a `Map<String, Object>` with key `products`.
+    @GetMapping("/category/{name}/{category}")
+    public Map<String, Object> filterbyCategoryProduct(@PathVariable String name, @PathVariable String category) {
+        Map<String, Object> response = new HashMap<>();
+        if (name.equals("null") && !category.equals("null")) {
+            response.put("products", productRepository.findByCategory(category));
+        } else if (!name.equals("null") && category.equals("null")) {
+            response.put("products", productRepository.findProductBySubName(name));
+        } else if (!name.equals("null") && !category.equals("null")) {
+            response.put("products", productRepository.findProductBySubNameAndCategory(name, category));
+        } else {
+            response.put("products", productRepository.findAll());
+        }
+        return response;
+    }
 
 
  // 7. Define the `listProduct` Method:
 //    - Annotate with `@GetMapping` to handle GET requests to fetch all products.
 //    - Fetch all products using `findAll()` method from `ProductRepository`.
 //    - Return all products in a `Map<String, Object>` with key `products`.
+    @GetMapping
+    public Map<String, Object> listProduct() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("products", productRepository.findAll());
+        return response;
+    }
 
 
 // 8. Define the `getProductbyCategoryAndStoreId` Method:
@@ -60,6 +125,18 @@ public class ProductController {
 //    - Remove product from `Inventory` first using `deleteByProductId(id)` in `InventoryRepository`.
 //    - Remove product from `Product` using `deleteById(id)` in `ProductRepository`.
 //    - Return a success message with key `message` indicating product deletion.
+    @DeleteMapping("/{id}")
+    public Map<String, Object> deleteProduct(@PathVariable Long id) {
+        Map<String, Object> response = new HashMap<>();
+        if (serviceClass.ValidateProductId(id)) {
+            inventoryRepository.deleteByProductId(id);
+            productRepository.deleteById(id);
+            response.put("message", "Product deleted successfully.");
+        } else {
+            response.put("message", "Product not found.");
+        }
+        return response;
+    }
 
 
  // 10. Define the `searchProduct` Method:
