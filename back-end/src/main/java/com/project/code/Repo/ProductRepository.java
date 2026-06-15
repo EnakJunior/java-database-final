@@ -61,7 +61,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 //      - Return type: List<Product>
 //      - Parameters: Long storeId, String pname
 //      - Use @Query annotation to write a custom query.
-    @Query("SELECT * from Product p WHERE p.")
+    @Query("SELECT p FROM Product p JOIN Inventory i ON p.id = i.product.id " +
+            "WHERE i.store.id = :storeId AND p.name LIKE %:pname%")
     public List<Product> findByNameLike(long storeId, String pname);
 
 

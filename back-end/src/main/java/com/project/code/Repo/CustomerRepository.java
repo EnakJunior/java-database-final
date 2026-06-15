@@ -29,7 +29,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 //      - This method will allow you to find a customer by their ID.
 //      - Return type: Customer
 //      - Parameter: Long id
-    public Customer findById(Long id);
+    public Customer findById(long id);
       
 // Example: public Customer findById(Long id);
 
