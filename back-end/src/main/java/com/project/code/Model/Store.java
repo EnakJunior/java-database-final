@@ -3,6 +3,8 @@ package com.project.code.Model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class Store {
 
@@ -31,7 +33,7 @@ public class Store {
 //    - Use @JsonManagedReference("inventory-store") to manage bidirectional relationships and avoid circular references.
     @OneToMany(mappedBy = "store")
     @JsonManagedReference
-    private Inventory inventory;
+    private List<Inventory> inventories;
 
 // 5. Add constructor:
 //    - A no-argument constructor
@@ -60,8 +62,8 @@ public class Store {
         return address;
     }
 
-    public Inventory getInventory(){
-        return inventory;
+    public List<Inventory> getInventories(){
+        return inventories;
     }
 
 //    Setters ------
@@ -73,8 +75,8 @@ public class Store {
         this.address = address;
     }
 
-    public void setInventory(Inventory inventory){
-        this.inventory = inventory;
+    public void setInventory(List<Inventory> inventories){
+        this.inventories = inventories;
     }
 
 }
